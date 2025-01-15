@@ -4,12 +4,19 @@ import {Metadata} from "next";
 import {baseDomain, blogName, blogThumbnailURL} from "@/config/const";
 
 type Props = {
-    params: { category: string };
+    params: Promise<{ category: string }>;
 };
 
 export const dynamicParams = false;
 
-export async function generateMetadata({ params: { category } }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const resolvedParams = await params;
+    const category = resolvedParams?.category;
+
+    if (!category) {
+        return {};
+    }
+
     const cg = getCategoryPublicName(category);
     const title = `${cg} | ${blogName}`;
     const url = `${baseDomain}/${category}`;
@@ -34,5 +41,12 @@ export function generateStaticParams() {
 }
 
 export default async function CategoryPage ({ params }: Props){
-    return <PostList category={params.category} />;
+    const resolvedParams = await params;
+    const category = resolvedParams?.category;
+
+    if (!category) {
+        return {};
+    }
+
+    return <PostList category={category} />;
 };

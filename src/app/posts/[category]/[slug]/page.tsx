@@ -9,13 +9,21 @@ import {baseDomain} from '@/config/const';
 import {getPostDetail, getPostPaths, parsePostAbstract, parseToc} from '@/lib/post';
 
 type Props = {
-    params: { category: string; slug: string };
+    params: Promise<{ category: string; slug: string }>;
 };
 
 export const dynamicParams = false;
 
-export async function generateMetadata({ params: { category, slug } }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const resolvedParams = await params;
+    const category = resolvedParams?.category;
+    const slug = resolvedParams?.slug;
+
     const post = await getPostDetail(category, slug);
+
+    if (!category || !slug) {
+        return {};
+    }
 
     const title = `${post.title} | CHWEYUN ARCHIVE`;
     const imageURL = `${baseDomain}${post.thumbnail}`;
@@ -47,8 +55,17 @@ export function generateStaticParams() {
         .map((item) => ({category: item.categoryPath, slug: item.slug}));
 }
 
-export default async function PostDetail ({ params: { category, slug } }: Props){
+export default async function PostDetail ({ params }: Props){
+    const resolvedParams = await params;
+    const category = resolvedParams?.category;
+    const slug = resolvedParams?.slug;
+
     const post = await getPostDetail(category, slug);
+
+    if (!category || !slug) {
+        return {};
+    }
+
     const toc = parseToc(post.content);
 
     return (
