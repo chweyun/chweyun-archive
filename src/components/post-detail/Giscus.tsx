@@ -26,7 +26,7 @@ export default function Giscus() {
         scriptElem.setAttribute("data-reactions-enabled", "1");
         scriptElem.setAttribute("data-emit-metadata", "0");
         scriptElem.setAttribute("data-input-position", "bottom");
-        scriptElem.setAttribute("data-theme", "catppuccin_latte");
+        scriptElem.setAttribute("data-theme", "light");
         scriptElem.setAttribute("data-lang", "ko");
 
         ref.current.appendChild(scriptElem);
