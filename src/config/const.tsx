@@ -1,4 +1,4 @@
-export const baseDomain = 'https://www.test.com';
+export const baseDomain = 'https://chweyun-archive.vercel.app';
 
 export const blogName = 'chweyun@rchive';
 export const blogDesc = '헤맬수록 내 땅이다';
