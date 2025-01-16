@@ -26,9 +26,9 @@ const ScrollProgressBar = () => {
   if (!mounted) return null;
 
   return (
-    <div className='fixed top-0 z-20 h-1 w-full bg-background'>
-      <div className='h-1 bg-primary' style={{ width: `${scrollTop}%` }}></div>
-    </div>
+      <div className='fixed top-0 h-1 w-[100vw] z-50'>
+        <div className='fixed h-1 bg-black' style={{width: `${scrollTop}%`}}></div>
+      </div>
   );
 };
 
