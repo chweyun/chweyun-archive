@@ -27,7 +27,7 @@ export default function Header() {
                 target={navItem.isNewWindow ? '_blank' : ''}
             >
                 <Image
-                    src={`/icon/${navItem.src}`}
+                    src={`/icons/${navItem.src}`}
                     width="120"
                     height="70"
                     alt={navItem.name}
