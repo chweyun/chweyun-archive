@@ -7,6 +7,7 @@ import TocSidebar from "@/components/post-detail/TableOfContentSidebar";
 import TocTop from "@/components/post-detail/TableOfContentTop";
 import { baseDomain } from "@/config/const";
 import { getPostDetail, getPostPaths, parsePostAbstract, parseToc } from "@/lib/post";
+import Giscus from "@/components/post-detail/Giscus";
 
 type Props = {
     params: Promise<{ category: string; slug: string }>;
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         return {};
     }
 
-    const title = `${post.title} | CHWEYUN ARCHIVE`;
+    const title = `${post.title.slice(0, 17)}...`;
     const imageURL = `${baseDomain}${post.thumbnail}`;
 
     return {
@@ -73,6 +74,7 @@ export default async function PostDetail({ params }: Props) {
             <article className="relative">
                 <TocSidebar toc={toc} />
                 <PostBody post={post} />
+                <Giscus />
             </article>
             <hr />
             <FloatingButton />
