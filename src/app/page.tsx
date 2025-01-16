@@ -15,7 +15,7 @@ export default function Home() {
                 <br />
                 ARCHIVE
             </h1>
-            <Image src={"/favicon.png"} width="1180" height="808" alt="rock" className="z-0 mx-auto absolute top-1/2 transform -translate-y-1/2" />
+            <Image src={"/favicon.png"} width="1000" height="808" alt="rock" className="z-0 mx-auto absolute top-1/2 left-0 right-0 transform -translate-y-1/2" />
         </div>
     );
 }
