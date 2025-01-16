@@ -13,7 +13,7 @@ export default function PostCard ({ post }: Props) {
             <li className='flex h-full flex-col gap-3 overflow-hidden rounded-2xl border transition dark:border-slate-700'>
                 <div className='relative aspect-video w-full rounded-t-md border-b'>
                     <Image
-                        src={post.thumbnail}
+                        src={post.thumbnail ?? '/posts/default.png'}
                         alt={`thumbnail for ${post.title}`}
                         sizes='(max-width: 1000px) 50vw, 450px'
                         fill

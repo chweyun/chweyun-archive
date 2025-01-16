@@ -16,8 +16,8 @@ interface Props {
 export const PostBody = ({ post }: Props) => {
     return (
         <>
-            <Image src={post.thumbnail} className="mx-auto w-[80%] mb-20 rounded-2xl border border-black"  alt={'thumbnail'} width="1000" height="1000"
-                   layout="intrinsic" />
+            {post.thumbnail && <Image src={post.thumbnail} className="mx-auto w-[80%] mb-20 rounded-2xl border border-black"  alt={'thumbnail'} width="1000" height="1000"
+                   layout="intrinsic" />}
 
             <MDXRemote
                 source={post.content}
