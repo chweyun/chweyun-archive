@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Layout from "@/components/layout/Layout";
 import { baseDomain, blogDesc, blogName, blogThumbnailURL } from "@/config/const";
 import "tailwindcss/tailwind.css";
+import "@/config/globals.css";
 import { Noto_Sans_KR } from "next/font/google";
 
 const notoSansKr = Noto_Sans_KR({
