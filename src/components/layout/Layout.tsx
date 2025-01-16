@@ -5,9 +5,9 @@ import React from "react";
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <div>
-            <Header/>
+            <Header />
             <main className="flex flex-1 flex-col min-h-[90vh]">{children}</main>
-            <Footer/>
+            <Footer />
         </div>
     );
 }

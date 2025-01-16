@@ -1,11 +1,11 @@
-import dayjs from 'dayjs';
-import fs from 'fs';
-import {sync} from 'glob';
-import matter from 'gray-matter';
-import path from 'path';
-import readingTime from 'reading-time';
+import dayjs from "dayjs";
+import fs from "fs";
+import { sync } from "glob";
+import matter from "gray-matter";
+import path from "path";
+import readingTime from "reading-time";
 
-const BASE_PATH = 'src/posts';
+const BASE_PATH = "src/posts";
 const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
 
 interface PostMatter {
@@ -39,7 +39,7 @@ interface HeadingItem {
 
 // 모든 MDX 파일 조회
 export const getPostPaths = (category?: string) => {
-    const folder = category || '**';
+    const folder = category || "**";
     const postPaths: string[] = sync(`${POSTS_PATH}/${folder}/**/*.mdx`);
     return postPaths;
 };
@@ -56,13 +56,10 @@ const parsePost = async (postPath: string): Promise<Post> => {
 
 // MDX 개요 파싱 (url, cg path, cg name, slug)
 export const parsePostAbstract = (postPath: string) => {
-    const normalizedPath = postPath.split(path.sep).join('/');
-    const filePath = normalizedPath
-        .slice(normalizedPath.indexOf(BASE_PATH))
-        .replace(`${BASE_PATH}/`, '')
-        .replace('.mdx', '');
+    const normalizedPath = postPath.split(path.sep).join("/");
+    const filePath = normalizedPath.slice(normalizedPath.indexOf(BASE_PATH)).replace(`${BASE_PATH}/`, "").replace(".mdx", "");
 
-    const [categoryPath, slug] = filePath.split('/');
+    const [categoryPath, slug] = filePath.split("/");
     const url = `/posts/${categoryPath}/${slug}`;
     const categoryPublicName = getCategoryPublicName(categoryPath);
     return { url, categoryPath, categoryPublicName, slug };
@@ -70,20 +67,20 @@ export const parsePostAbstract = (postPath: string) => {
 
 // MDX detail
 const parsePostDetail = async (postPath: string) => {
-    const file = fs.readFileSync(postPath, 'utf8');
+    const file = fs.readFileSync(postPath, "utf8");
     const { data, content } = matter(file);
     const grayMatter = data as PostMatter;
     const readingMinutes = Math.ceil(readingTime(content).minutes);
-    const dateString = dayjs(grayMatter.date).locale('ko').format('YYYY-MM-DD');
+    const dateString = dayjs(grayMatter.date).locale("ko").format("YYYY-MM-DD");
     return { ...grayMatter, dateString, content, readingMinutes };
 };
 
 // category folder name을 public name으로 변경 : dir_name -> Dir Name
 export const getCategoryPublicName = (dirPath: string) =>
     dirPath
-        .split('_')
+        .split("_")
         .map((token) => token[0].toUpperCase() + token.slice(1, token.length))
-        .join(' ');
+        .join(" ");
 
 // post를 날짜 최신순으로 정렬
 const sortPostList = (PostList: Post[]) => {
@@ -103,8 +100,8 @@ export const getSortedPostList = async (category?: string) => {
 
 export const getSitemapPostList = async () => {
     const postList = await getPostList();
-    const baseUrl = 'https://www.d5br5.dev';
-    return postList.map(({url}) => ({
+    const baseUrl = "https://www.d5br5.dev";
+    return postList.map(({ url }) => ({
         lastModified: new Date(),
         url: `${baseUrl}${url}`,
     }));
@@ -148,16 +145,16 @@ export const parseToc = (content: string): HeadingItem[] => {
     const headingList = content.match(regex);
     return (
         headingList?.map((heading: string) => ({
-            text: heading.replace('##', '').replace('#', ''),
+            text: heading.replace("##", "").replace("#", ""),
             link:
-                '#' +
+                "#" +
                 heading
-                    .replace('# ', '')
-                    .replace('#', '')
-                    .replace(/[\[\]:!@#$/%^&*()+=,.]/g, '')
-                    .replace(/ /g, '-')
+                    .replace("# ", "")
+                    .replace("#", "")
+                    .replace(/[\[\]:!@#$/%^&*()+=,.]/g, "")
+                    .replace(/ /g, "-")
                     .toLowerCase()
-                    .replace('?', ''),
+                    .replace("?", ""),
             indent: (heading.match(/#/g)?.length || 2) - 2,
         })) || []
     );

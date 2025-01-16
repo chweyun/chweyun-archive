@@ -1,6 +1,6 @@
-import {Metadata} from "next";
+import { Metadata } from "next";
 import Layout from "@/components/layout/Layout";
-import { baseDomain, blogDesc, blogName, blogThumbnailURL } from '@/config/const';
+import { baseDomain, blogDesc, blogName, blogThumbnailURL } from "@/config/const";
 import "tailwindcss/tailwind.css";
 import { Noto_Sans_KR } from "next/font/google";
 
@@ -14,17 +14,17 @@ export const metadata: Metadata = {
     title: blogName,
     description: blogDesc,
     icons: {
-      icon: "/favicon.png",
+        icon: "/favicon.png",
     },
     openGraph: {
         title: blogName,
         description: blogDesc,
         siteName: blogName,
         images: [blogThumbnailURL],
-        type: 'website',
+        type: "website",
     },
     twitter: {
-        card: 'summary_large_image',
+        card: "summary_large_image",
         title: blogName,
         description: blogDesc,
         images: [blogThumbnailURL],
@@ -32,17 +32,15 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-      <html lang="en" className={`${notoSansKr.className} h-full scroll-my-20 scroll-smooth`}>
-      <body className="bg-stone-100 flex min-h-screen flex-col">
-      <Layout>
-          {children}
-      </Layout>
-      </body>
-      </html>
-);
+    return (
+        <html lang="en" className={`${notoSansKr.className} h-full scroll-my-20 scroll-smooth`}>
+            <body className="bg-stone-100 flex min-h-screen flex-col">
+                <Layout>{children}</Layout>
+            </body>
+        </html>
+    );
 }

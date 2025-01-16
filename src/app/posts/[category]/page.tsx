@@ -1,7 +1,7 @@
-import PostList from '@/components/post-list/PostList';
-import {getCategoryList, getCategoryPublicName} from '@/lib/post';
-import {Metadata} from "next";
-import {baseDomain, blogName, blogThumbnailURL} from "@/config/const";
+import PostList from "@/components/post-list/PostList";
+import { getCategoryList, getCategoryPublicName } from "@/lib/post";
+import { Metadata } from "next";
+import { baseDomain, blogName, blogThumbnailURL } from "@/config/const";
 
 type Props = {
     params: Promise<{ category: string }>;
@@ -37,10 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export function generateStaticParams() {
     const categoryList = getCategoryList();
-    return categoryList.map((category) => ({category}));
+    return categoryList.map((category) => ({ category }));
 }
 
-export default async function CategoryPage ({ params }: Props){
+export default async function CategoryPage({ params }: Props) {
     const resolvedParams = await params;
     const category = resolvedParams?.category;
 
@@ -49,4 +49,4 @@ export default async function CategoryPage ({ params }: Props){
     }
 
     return <PostList category={category} />;
-};
+}

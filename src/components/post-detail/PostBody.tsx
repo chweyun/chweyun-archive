@@ -1,12 +1,12 @@
-import { MdxComponents } from '../mdx';
-import { Post } from '@/config/types';
+import { MdxComponents } from "../mdx";
+import { Post } from "@/config/types";
 // @ts-expect-error no types
-import remarkA11yEmoji from '@fec/remark-a11y-emoji';
-import { MDXRemote } from 'next-mdx-remote/rsc';
-import rehypePrettyCode from 'rehype-pretty-code';
-import rehypeSlug from 'rehype-slug';
-import remarkBreaks from 'remark-breaks';
-import remarkGfm from 'remark-gfm';
+import remarkA11yEmoji from "@fec/remark-a11y-emoji";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import rehypePrettyCode from "rehype-pretty-code";
+import rehypeSlug from "rehype-slug";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
 import Image from "next/image";
 
 interface Props {
@@ -16,8 +16,9 @@ interface Props {
 export const PostBody = ({ post }: Props) => {
     return (
         <>
-            {post.thumbnail && <Image src={post.thumbnail} className="mx-auto w-[80%] mb-20 rounded-2xl border border-black"  alt={'thumbnail'} width="1000" height="1000"
-                   layout="intrinsic" />}
+            {post.thumbnail && (
+                <Image src={post.thumbnail} className="mx-auto w-[80%] mb-20 rounded-2xl border border-black" alt={"thumbnail"} width="1000" height="1000" layout="intrinsic" />
+            )}
 
             <MDXRemote
                 source={post.content}
@@ -36,7 +37,7 @@ export const PostBody = ({ post }: Props) => {
                             [
                                 rehypePrettyCode,
                                 {
-                                    theme: { dark: 'github-dark-dimmed', light: 'github-light' },
+                                    theme: { dark: "github-dark-dimmed", light: "github-light" },
                                 },
                             ],
                             // toc id를 추가하고 제목을 연결

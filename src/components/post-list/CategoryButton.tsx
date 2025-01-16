@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { Button } from '../common/Button';
+import Link from "next/link";
+import { Button } from "../common/Button";
 
 interface Props {
     isCurrent: boolean;
@@ -11,7 +11,7 @@ interface Props {
 export const CategoryButton = ({ isCurrent, displayName, href, count }: Props) => {
     return (
         <li className="cursor-pointer">
-            <Button asChild size='sm' variant={isCurrent ? 'outline' : 'default'}>
+            <Button asChild size="sm" variant={isCurrent ? "outline" : "default"}>
                 <Link href={href}>
                     {displayName} ({count})
                 </Link>

@@ -1,7 +1,3 @@
 export default function Mail() {
-    return (
-        <div>
-            mail
-        </div>
-    );
+    return <div>mail</div>;
 }
