@@ -17,7 +17,7 @@ const navList = [
 export default function Header() {
     const pathname = usePathname();
     const { ref, marginTop } = useSpyElem(92);
-    const isHome = pathname !== "/";
+    const isHome = pathname == "/";
 
     const NavItem = ({ navItem }: { navItem: { name: string; href: string; src: string; isNewWindow: boolean } }) => (
         <div key={navItem.name} className="flex items-center">
@@ -29,17 +29,17 @@ export default function Header() {
 
     return (
         <>
-            <ScrollProgressBar />
+            {!isHome && <ScrollProgressBar />}
             <nav
-                style={isHome ? { marginTop } : undefined}
-                ref={isHome ? ref : null}
+                style={isHome ? undefined : { marginTop }}
+                ref={isHome ? null : ref}
                 className={`
                     fixed z-40 flex flex-col items-center justify-center print:hidden
                     h-[90px] w-[90%] left-1/2 transform -translate-x-1/2
-                    ${isHome} ? 'pb-[1px]' : 'border-b border-black bg-opacity-95 bg-stone-100'}
+                    ${isHome ? "pb-[1px]" : "border-b border-black bg-opacity-95 bg-stone-100"}
                 `}
             >
-                <div className={`mt-1 flex h-[64px] w-full items-center justify-between px-4`}>
+                <div className="mt-1 flex h-[64px] w-full items-center justify-between px-4">
                     <div className="flex items-center font-medium">
                         <div className="flex items-center font-medium">
                             {navList
@@ -50,7 +50,7 @@ export default function Header() {
                         </div>
                     </div>
 
-                    <div className="flex gap-3 mt-1 ">
+                    <div className="flex gap-3 mt-1">
                         <div className="flex gap-3 mt-1">
                             {navList
                                 .filter((navItem) => !navItem.isLeft)
