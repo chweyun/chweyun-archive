@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Clock3 } from "lucide-react";
 import { Post } from "@/config/types";
 
 interface Props {
@@ -33,8 +32,7 @@ export default function PostCard({ post }: Props) {
                             <span>{post.dateString}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                            <Clock3 className="w-3.5" />
-                            <span>{post.readingMinutes}m</span>
+                            <span>🕔 {post.readingMinutes}m</span>
                         </div>
                     </div>
                 </div>

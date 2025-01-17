@@ -1,5 +1,4 @@
 import { Post } from "@/config/types";
-import { Clock3 } from "lucide-react";
 
 interface Props {
     post: Post;
@@ -14,8 +13,7 @@ export const PostHeader = ({ post }: Props) => {
                     <span>{post.dateString}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                    <Clock3 className="w-3.5" />
-                    <span>{post.readingMinutes}m</span>
+                    <span>🕔 {post.readingMinutes}m</span>
                 </div>
             </div>
         </header>
