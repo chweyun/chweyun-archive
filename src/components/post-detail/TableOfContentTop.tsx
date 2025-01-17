@@ -12,6 +12,7 @@ export default function TableOfContentTop({ toc }: Props) {
 
     return (
         <nav className="xl:hidden">
+            <hr />
             <ul>
                 {toc.map((item) => (
                     <li key={item.link} className={cn(item.indent === 1 && "ml-4", "my-0 py-1 ")}>
