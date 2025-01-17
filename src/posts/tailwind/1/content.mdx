@@ -1,0 +1,76 @@
+---
+title: "배포 환경에서 tailwind css가 적용되지 않는다면? (Next15, Vercel, tailwind)"
+date: 2025-01-17
+desc: 근본 없어진 스타일링에 저는 그만 정신을 잃고 말았습니다...
+thumbnail: /posts/tailwind/1/thumbnail.png
+---
+
+## 서론
+
+로컬에선 이랬는데요
+
+![](/posts/tailwind/1/1.png)
+
+배포하니 요래됐슴다…
+
+![](/posts/tailwind/1/2.png)
+
+어떤 부분을 놓쳐 개발환경과 배포환경에서의 Tailwind 적용 여부가 갈리는지 꼼꼼히 알아보겠습니다 🤓
+
+---
+
+### 1. Tailwind.config 파일을 적절하게 작성했는가?
+
+**Tailwind.config** 파일에는 Tailwind의 테마 설정, 사용할 색상, 폰트, 간격 등을 정의하는 규칙이 포함되어 있습니다. 또한 사용하지 않는 CSS를 제거하는 Purge 기능이 동작하도록 설정할 수도 있습니다.
+
+```javascript
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+    purge: ["./src/**/*.{js,jsx,ts,tsx}"],
+    content: ["./src/**/*.{js,ts,jsx,tsx}"],
+    plugins: [],
+};
+```
+
+여기서 `content` 설정은 Tailwind가 CSS를 생성할 때 어떤 파일에서 클래스를 검색할지 지정하는 역할을 합니다. 해당 구문이 적절히 작성되지 않았다면 CSS가 적용되지 않습니다.
+
+✅ **해당 파일을 적절하게 작성했는지,**
+✅ **디렉토리 명 등에 오타는 없는지,**
+✅ **배포 시 gitignore 등으로 인해 누락되지는 않았는지** 체크해보아야 합니다.
+
+---
+
+### 2. 글로벌 CSS 파일을 적절하게 작성했는가?
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+위 구문은 각각 Tailwind의 주요 CSS 스타일 계층을 프로젝트에 포함시키는 역할을 합니다. 글로벌 CSS 파일에 이 디렉티브가 없으면 Tailwind가 스타일을 제대로 생성하거나 적용하지 못할 수 있습니다.
+
+> **@tailwind 구문을 작성하지 않더라도, 로컬 환경에서는 정상적으로 CSS가 적용된 것처럼 보일 수 있습니다. 왜일까요?**
+
+#### 로컬 환경에서의 tailwind 동작 과정
+
+- Tailwind CSS는 JIT(Just-In-Time) 컴파일러를 사용합니다.
+- 로컬 개발 환경에서는 Tailwind가 클래스 사용 여부와 관계없이 기본 스타일(CSS Reset 포함)을 메모리에 로드하고 적용합니다.
+- 따라서 글로벌 CSS에 `@tailwind` 디렉티브가 없어도 정상적으로 보일 수 있습니다.
+
+#### 배포 환경에서의 tailwind 동작 과정
+
+- 배포 환경에서는 Tailwind가 `content` 설정에 명시된 파일에서 사용된 클래스만 탐색하고, 필요한 스타일만 생성합니다.
+- 그렇기 때문에 만약 `@tailwind` 구문이 누락되었다면, **기본 스타일(CSS Reset)**이 누락되며 Tailwind의 컴포넌트 및 유틸리티 클래스도 포함되지 않아 스타일이 적용되지 않습니다.
+
+✅ **글로벌 CSS 파일을 작성했는지,**
+✅ **해당 파일을 프로젝트의 진입점(예: index.js, App.js)에 적절히 import했는지** 체크해보아야 합니다.
+
+---
+
+## 결론
+
+저의 경우, 위 두 조건 모두 지켜지지 않아 CSS가 적용되지 않을 수밖에 없는 상황이었습니다.
+`tailwind.config`가 git commit 시 누락된 상태였고, 글로벌 CSS 파일도 작성하지 않은 상태였습니다 🙂‍↔️
+
+알고 보니 너무나도 사소하고 기본적인 실수였지만, 그렇기 때문에 Tailwind의 작동 원리를 알아보는 시간을 가질 수 있어 유익했습니다!
