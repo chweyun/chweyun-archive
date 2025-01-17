@@ -35,7 +35,7 @@ export default function Header() {
                 ref={isHome ? null : ref}
                 className={`
                     fixed z-40 flex flex-col items-center justify-center print:hidden
-                    h-[90px] w-[90%] left-1/2 transform -translate-x-1/2
+                    h-[94px] w-[90%] left-1/2 transform -translate-x-1/2
                     ${isHome ? "pb-[1px]" : "border-b border-black bg-opacity-95 bg-stone-100"}
                 `}
             >
@@ -50,8 +50,8 @@ export default function Header() {
                         </div>
                     </div>
 
-                    <div className="flex gap-3 mt-1">
-                        <div className="flex gap-3 mt-1">
+                    <div className="flex gap-3">
+                        <div className="flex gap-3 mb-2">
                             {navList
                                 .filter((navItem) => !navItem.isLeft)
                                 .map((navItem) => (
