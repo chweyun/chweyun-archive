@@ -18,6 +18,7 @@ export default function Header() {
     const pathname = usePathname();
     const { ref, marginTop } = useSpyElem(92);
     const isHome = pathname == "/";
+    const isPostDetail = pathname.startsWith("/posts/") && pathname.split("/posts/")[1]?.includes("/");
 
     const NavItem = ({ navItem }: { navItem: { name: string; href: string; src: string; isNewWindow: boolean } }) => (
         <div key={navItem.name} className="flex items-center">
@@ -29,10 +30,10 @@ export default function Header() {
 
     return (
         <>
-            {!isHome && <ScrollProgressBar />}
+            {isPostDetail && <ScrollProgressBar />}
             <nav
-                style={isHome ? undefined : { marginTop }}
-                ref={isHome ? null : ref}
+                style={isPostDetail ? { marginTop } : undefined}
+                ref={isPostDetail ? ref : null}
                 className={`
                     fixed z-40 flex flex-col items-center justify-center print:hidden
                     h-[94px] w-[90%] left-1/2 transform -translate-x-1/2
