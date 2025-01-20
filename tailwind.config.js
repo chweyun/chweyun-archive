@@ -88,6 +88,9 @@ module.exports = {
                         backgroundColor: "var(--white)",
                         border: "1px solid #e5e7eb",
                         borderRadius: "8px",
+                        overflowX: "auto",
+                        whiteSpace: "pre-wrap",
+                        wordWrap: "break-word",
                     },
 
                     "pre > code > span": {
