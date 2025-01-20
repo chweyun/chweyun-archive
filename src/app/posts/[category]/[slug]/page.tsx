@@ -30,11 +30,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const imageURL = `${baseDomain}${post.thumbnail}`;
 
     return {
-        title,
+        title: title,
         description: post.desc,
 
         openGraph: {
-            title,
+            title: title,
             description: post.desc,
             type: "article",
             publishedTime: post.date.toISOString(),
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             images: [imageURL],
         },
         twitter: {
-            title,
+            title: title,
             description: post.desc,
             images: [imageURL],
         },
