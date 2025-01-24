@@ -19,7 +19,7 @@ export default function CategoryList({ categoryList, currentCategory = "all" }: 
     return (
         <>
             <section className="mb-10 hidden sm:block">
-                <ul className="flex gap-2 bg-red-200">
+                <ul className="flex flex-wrap gap-2">
                     <CategoryButton isCurrent={currentCategory === "all"} displayName="all" onChange={onCategoryChange} />
                     {categoryList.map((cg) => (
                         <CategoryButton key={cg} displayName={cg} isCurrent={cg === currentCategory} onChange={onCategoryChange} />
