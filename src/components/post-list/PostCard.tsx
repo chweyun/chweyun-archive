@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { PostCard } from "@/config/types";
+import type { Post } from "@/config/types";
 import { Button } from "@/components/common/Button";
 
 interface Props {
-    post: PostCard;
+    post: Post;
     currentCategory?: string;
 }
 
