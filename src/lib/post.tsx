@@ -75,14 +75,46 @@ export const getPostDetail = async (pageId: string) => {
     const page = await notion.pages.retrieve({
         page_id: pageId,
     });
+
+    let pageTitle = "";
+    let pageDate = "";
+    let pageDesc = "";
+    let pageThumbnail = "";
     const mdBlocks = await n2m.pageToMarkdown(pageId);
+
+    if ("properties" in page) {
+        if ("title" in page.properties.title) {
+            pageTitle = page.properties.title.title[0].plain_text;
+        }
+
+        if ("date" in page.properties.createdAt) {
+            pageDate = page.properties?.createdAt?.date?.start ?? "";
+        }
+
+        if ("rich_text" in page.properties.description) {
+            const tempDesc = page.properties.description.rich_text[0];
+            if ("text" in tempDesc) {
+                pageDesc = tempDesc.text.content;
+            }
+        }
+
+        if ("files" in page.properties.thumbnail) {
+            const tempThumbnail = page.properties.thumbnail.files[0];
+            if ("file" in tempThumbnail) {
+                const tempThumbnailV2 = tempThumbnail.file;
+                if ("url" in tempThumbnailV2) {
+                    pageThumbnail = tempThumbnailV2.url;
+                }
+            }
+        }
+    }
 
     return {
         id: page.id,
-        title: page.properties?.title?.title[0]?.plain_text,
-        date: page.properties?.createdAt?.date?.start,
-        desc: page.properties?.description?.rich_text[0]?.text.content,
-        thumbnail: page.properties?.thumbnail?.files[0].file.url,
+        title: pageTitle,
+        date: pageDate,
+        desc: pageDesc,
+        thumbnail: pageThumbnail,
         content: n2m.toMarkdownString(mdBlocks).parent,
     };
 };

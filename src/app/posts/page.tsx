@@ -1,15 +1,9 @@
 import PostList from "@/components/post-list/PostList";
 
-type Props = {
-    searchParams: {
-        category?: string;
-    };
-};
+type Props = Promise<{ category?: string }>;
 
-// export default async function Posts(searchParams: Promise<{ category?: string }>) {
-export default async function Posts({ searchParams }: Props) {
-    const category = (await searchParams!.category) || undefined;
-    // const { category } = await searchParams;
-
+export default async function Posts(props: { searchParams: Props }) {
+    const params = await props.searchParams;
+    const category = params.category;
     return <PostList category={category} />;
 }

@@ -16,17 +16,18 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import "highlight.js/styles/base16/dracula.min.css";
 
-type Props = {
-    params: {
-        id: string;
-    };
-};
+type Props = Promise<{ id: string }>;
 
 export const dynamicParams = false;
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { id } = params;
+export async function generateMetadata(props: { params: Props }): Promise<Metadata> {
+    const params = await props.params;
+    const id = params.id;
     const result = await getPostDetail(id);
+
+    if (!result) {
+        return {};
+    }
 
     const title = `${result.title.slice(0, 17)}...`;
     const imageURL = `${baseDomain}${result.thumbnail}`;
@@ -51,9 +52,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
 }
 
-export default async function PostDetail({ params }: Props) {
-    const { id } = params;
+export default async function PostDetail(props: { params: Props }) {
+    const params = await props.params;
+    const id = params.id;
     const result = await getPostDetail(id);
+
+    if (!result) {
+        return <></>;
+    }
+
     const toc = parseToc(result.content);
 
     return (
