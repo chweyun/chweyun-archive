@@ -5,7 +5,9 @@ import { NotionToMarkdown } from "notion-to-md";
 const notion = new Client({ auth: process.env.NEXT_PUBLIC_NOTION_API_KEY });
 const databaseId = process.env.NEXT_PUBLIC_NOTION_DATABASE_ID;
 
-export const getSortedPostList = async (category?: string): Promise<Post[]> => {
+export const getSortedPostList = async (startCursor: string | null, category?: string): Promise<{ posts: Post[]; next_cursor: string | null; has_more: boolean }> => {
+    const pageSize = 10;
+
     const filters: any[] = [
         {
             property: "releasable",
@@ -35,22 +37,26 @@ export const getSortedPostList = async (category?: string): Promise<Post[]> => {
                 direction: "descending",
             },
         ],
+        start_cursor: startCursor ? startCursor : undefined,
+        page_size: pageSize,
     });
 
-    return await Promise.all(
-        response.results.map(async (item: any) => {
-            return {
-                id: item.id,
-                title: item.properties.title.title[0].text.content,
-                date: item.properties.createdAt.date.start,
-                desc: item.properties.description?.rich_text[0]?.text.content,
-                category: item.properties.category.multi_select.map((c: any) => {
-                    return c.name;
-                }),
-                thumbnail: item.properties.thumbnail?.files[0]?.file?.url,
-            };
-        }),
-    );
+    return {
+        posts: await Promise.all(
+            response.results.map(async (item: any) => {
+                return {
+                    id: item.id,
+                    title: item.properties.title.title[0]?.text.content || "",
+                    date: item.properties.createdAt.date?.start || "",
+                    desc: item.properties.description?.rich_text[0]?.text.content || "",
+                    category: item.properties.category.multi_select.map((c: any) => c.name),
+                    thumbnail: item.properties.thumbnail?.files[0]?.file?.url || null,
+                };
+            }),
+        ),
+        next_cursor: response.next_cursor,
+        has_more: response.has_more,
+    };
 };
 
 export const getCategoryList = async (): Promise<string[]> => {

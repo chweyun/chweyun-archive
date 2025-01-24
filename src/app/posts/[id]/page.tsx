@@ -4,7 +4,7 @@ import { PostHeader } from "@/components/post-detail/PostHeader";
 import TocSidebar from "@/components/post-detail/TableOfContentSidebar";
 import TocTop from "@/components/post-detail/TableOfContentTop";
 import { baseDomain } from "@/config/const";
-import { getPostDetail, parseToc } from "@/lib/post";
+import { parseToc } from "@/lib/post";
 import Giscus from "@/components/post-detail/Giscus";
 
 import ReactMarkdown from "react-markdown";
@@ -22,8 +22,8 @@ export const dynamicParams = false;
 
 export async function generateMetadata(props: { params: Props }): Promise<Metadata> {
     const params = await props.params;
-    const id = params.id;
-    const result = await getPostDetail(id);
+    const postApi = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post/${params.id}`);
+    const result = await postApi.json();
 
     if (!result) {
         return {};
@@ -41,7 +41,7 @@ export async function generateMetadata(props: { params: Props }): Promise<Metada
             description: result.desc,
             type: "article",
             publishedTime: result.date,
-            url: `${baseDomain}/posts/${id}`,
+            url: `${baseDomain}/posts/${params.id}`,
             images: [imageURL],
         },
         twitter: {
@@ -54,8 +54,8 @@ export async function generateMetadata(props: { params: Props }): Promise<Metada
 
 export default async function PostDetail(props: { params: Props }) {
     const params = await props.params;
-    const id = params.id;
-    const result = await getPostDetail(id);
+    const postApi = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post/${params.id}`);
+    const result = await postApi.json();
 
     if (!result) {
         return <></>;
