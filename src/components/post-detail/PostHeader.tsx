@@ -1,7 +1,12 @@
-import { Post } from "@/config/types";
-
 interface Props {
-    post: Post;
+    post: {
+        id: string;
+        title: string;
+        date: string;
+        desc: string;
+        thumbnail: string;
+        content: string;
+    };
 }
 
 export const PostHeader = ({ post }: Props) => {
@@ -10,10 +15,7 @@ export const PostHeader = ({ post }: Props) => {
             <h1 className="mb-5 text-3xl">{post.title}</h1>
             <div className="flex justify-center gap-3 text-sm text-gray-500 dark:text-gray-400">
                 <div className="flex items-center gap-1">
-                    <span>{post.dateString}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <span>🕔 {post.readingMinutes}m</span>
+                    <span>{post.date}</span>
                 </div>
             </div>
         </header>

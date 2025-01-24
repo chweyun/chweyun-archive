@@ -10,7 +10,6 @@ import { useSpyElem } from "@/hook/useSpy";
 const navList = [
     { name: "HOME", src: "home.PNG", href: "/", isLeft: true, isNewWindow: false },
     { name: "POST", src: "post.png", href: "/posts", isLeft: true, isNewWindow: false },
-    { name: "MAIL", src: "mail.PNG", href: "/", isLeft: false, isNewWindow: false },
     { name: "GIT", src: "git.PNG", href: "https://github.com/chweyun", isLeft: false, isNewWindow: true },
 ];
 

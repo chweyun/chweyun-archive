@@ -1,6 +1,6 @@
 import CategoryList from "./CategoryList";
 import PostCard from "./PostCard";
-import { getAllPostCount, getCategoryDetailList, getSortedPostList } from "@/lib/post";
+import { getCategoryList, getSortedPostList } from "@/lib/post";
 
 interface PostListProps {
     category?: string;
@@ -8,16 +8,15 @@ interface PostListProps {
 
 export default async function PostList({ category }: PostListProps) {
     const postList = await getSortedPostList(category);
-    const categoryList = await getCategoryDetailList();
-    const allPostCount = await getAllPostCount();
+    const categoryList = await getCategoryList();
 
     return (
         <section className="mx-auto mt-40 w-full max-w-[950px] px-4">
-            <CategoryList allPostCount={allPostCount} categoryList={categoryList} currentCategory={category} />
+            <CategoryList categoryList={categoryList} currentCategory={category} />
             <section>
                 <ul className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
                     {postList.map((post) => (
-                        <PostCard key={post.url + post.date} post={post} />
+                        <PostCard key={post.id} post={post} currentCategory={category} />
                     ))}
                 </ul>
             </section>

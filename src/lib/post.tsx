@@ -1,143 +1,90 @@
-import dayjs from "dayjs";
-import fs from "fs";
-import { sync } from "glob";
-import matter from "gray-matter";
-import path from "path";
-import readingTime from "reading-time";
+import { Client } from "@notionhq/client";
+import { HeadingItem, PostCard } from "@/config/types";
+import { NotionToMarkdown } from "notion-to-md";
 
-const BASE_PATH = "src/posts";
-const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
+const notion = new Client({ auth: process.env.NEXT_PUBLIC_NOTION_API_KEY });
+const databaseId = process.env.NEXT_PUBLIC_NOTION_DATABASE_ID;
 
-interface PostMatter {
-    title: string;
-    date: Date;
-    dateString: string;
-    thumbnail: string;
-    desc: string;
-}
+export const getSortedPostList = async (category?: string): Promise<PostCard[]> => {
+    const filters: any[] = [
+        {
+            property: "releasable",
+            checkbox: {
+                equals: true,
+            },
+        },
+    ];
 
-interface Post extends PostMatter {
-    url: string;
-    slug: string;
-    categoryPath: string;
-    content: string;
-    readingMinutes: number;
-    categoryPublicName: string;
-}
-
-interface CategoryDetail {
-    dirName: string;
-    publicName: string;
-    count: number;
-}
-
-interface HeadingItem {
-    text: string;
-    link: string;
-    indent: number;
-}
-
-// 모든 MDX 파일 조회
-export const getPostPaths = (category?: string) => {
-    const folder = category || "**";
-    const postPaths: string[] = sync(`${POSTS_PATH}/${folder}/**/*.mdx`);
-    return postPaths;
-};
-
-// MDX 파일 파싱 : abstract / detail 구분
-const parsePost = async (postPath: string): Promise<Post> => {
-    const postAbstract = parsePostAbstract(postPath);
-    const postDetail = await parsePostDetail(postPath);
-    return {
-        ...postAbstract,
-        ...postDetail,
-    };
-};
-
-// MDX 개요 파싱 (url, cg path, cg name, slug)
-export const parsePostAbstract = (postPath: string) => {
-    const normalizedPath = postPath.split(path.sep).join("/");
-    const filePath = normalizedPath.slice(normalizedPath.indexOf(BASE_PATH)).replace(`${BASE_PATH}/`, "").replace(".mdx", "");
-
-    const [categoryPath, slug] = filePath.split("/");
-    const url = `/posts/${categoryPath}/${slug}`;
-    const categoryPublicName = getCategoryPublicName(categoryPath);
-    return { url, categoryPath, categoryPublicName, slug };
-};
-
-// MDX detail
-const parsePostDetail = async (postPath: string) => {
-    const file = fs.readFileSync(postPath, "utf8");
-    const { data, content } = matter(file);
-    const grayMatter = data as PostMatter;
-    const readingMinutes = Math.ceil(readingTime(content).minutes);
-    const dateString = dayjs(grayMatter.date).locale("ko").format("YYYY-MM-DD");
-    return { ...grayMatter, dateString, content, readingMinutes };
-};
-
-// category folder name을 public name으로 변경 : dir_name -> Dir Name
-export const getCategoryPublicName = (dirPath: string) =>
-    dirPath
-        .split("_")
-        .map((token) => token[0].toUpperCase() + token.slice(1, token.length))
-        .join(" ");
-
-// post를 날짜 최신순으로 정렬
-const sortPostList = (PostList: Post[]) => {
-    return PostList.sort((a, b) => (a.date > b.date ? -1 : 1));
-};
-
-// 모든 포스트 목록 조회. 블로그 메인 페이지에서 사용
-export const getPostList = async (category?: string): Promise<Post[]> => {
-    const postPaths = getPostPaths(category);
-    return await Promise.all(postPaths.map((postPath) => parsePost(postPath)));
-};
-
-export const getSortedPostList = async (category?: string) => {
-    const postList = await getPostList(category);
-    return sortPostList(postList);
-};
-
-export const getSitemapPostList = async () => {
-    const postList = await getPostList();
-    const baseUrl = "https://www.d5br5.dev";
-    return postList.map(({ url }) => ({
-        lastModified: new Date(),
-        url: `${baseUrl}${url}`,
-    }));
-};
-
-export const getAllPostCount = async () => (await getPostList()).length;
-
-export const getCategoryList = () => {
-    const cgPaths: string[] = sync(`${POSTS_PATH}/*`);
-    return cgPaths.map((p) => p.split(path.sep).slice(-1)?.[0]);
-};
-
-export const getCategoryDetailList = async () => {
-    const postList = await getPostList();
-    const result: { [key: string]: number } = {};
-    for (const post of postList) {
-        const category = post.categoryPath;
-        if (result[category]) {
-            result[category] += 1;
-        } else {
-            result[category] = 1;
-        }
+    if (category) {
+        filters.push({
+            property: "category",
+            multi_select: {
+                contains: category,
+            },
+        });
     }
-    const detailList: CategoryDetail[] = Object.entries(result).map(([category, count]) => ({
-        dirName: category,
-        publicName: getCategoryPublicName(category),
-        count,
-    }));
 
-    return detailList;
+    const response = await notion.databases.query({
+        database_id: databaseId!,
+        filter: {
+            and: filters,
+        },
+        sorts: [
+            {
+                property: "createdAt",
+                direction: "descending",
+            },
+        ],
+    });
+
+    return await Promise.all(
+        response.results.map(async (item: any) => {
+            return {
+                id: item.id,
+                title: item.properties.title.title[0].text.content,
+                date: item.properties.createdAt.date.start,
+                desc: item.properties.description?.rich_text[0]?.text.content,
+                category: item.properties.category.multi_select.map((c: any) => {
+                    return c.name;
+                }),
+                thumbnail: item.properties.thumbnail?.files[0]?.file?.url,
+            };
+        }),
+    );
 };
 
-// post 상세 페이지 내용 조회
-export const getPostDetail = async (category: string, slug: string) => {
-    const filePath = `${POSTS_PATH}/${category}/${slug}/content.mdx`;
-    return await parsePost(filePath);
+export const getCategoryList = async (): Promise<string[]> => {
+    const databaseInfo = await notion.databases.retrieve({
+        database_id: databaseId!,
+    });
+
+    const categoryProperty = databaseInfo.properties["category"];
+
+    if (!categoryProperty || categoryProperty.type !== "multi_select") {
+        return [];
+    }
+
+    return categoryProperty.multi_select.options.map((option) => option.name);
+};
+
+export const getPostDetail = async (pageId: string) => {
+    const n2m = new NotionToMarkdown({
+        notionClient: notion,
+    });
+
+    const page = await notion.pages.retrieve({
+        page_id: pageId,
+    });
+    const mdBlocks = await n2m.pageToMarkdown(pageId);
+
+    return {
+        id: page.id,
+        title: page.properties?.title?.title[0]?.plain_text,
+        date: page.properties?.createdAt?.date?.start,
+        desc: page.properties?.description?.rich_text[0]?.text.content,
+        thumbnail: page.properties?.thumbnail?.files[0].file.url,
+        content: n2m.toMarkdownString(mdBlocks).parent,
+    };
 };
 
 export const parseToc = (content: string): HeadingItem[] => {

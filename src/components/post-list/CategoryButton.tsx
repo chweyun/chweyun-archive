@@ -1,20 +1,20 @@
-import Link from "next/link";
 import { Button } from "../common/Button";
 
 interface Props {
     isCurrent: boolean;
     displayName: string;
-    href: string;
-    count: number;
+    onChange: (v: string) => void;
 }
 
-export const CategoryButton = ({ isCurrent, displayName, href, count }: Props) => {
+export const CategoryButton = ({ isCurrent, displayName, onChange }: Props) => {
+    const handleChange = (v: string) => {
+        onChange(v);
+    };
+
     return (
         <li className="cursor-pointer">
-            <Button asChild size="sm" variant={isCurrent ? "outline" : "default"}>
-                <Link href={href}>
-                    {displayName} ({count})
-                </Link>
+            <Button asChild size="sm" variant={isCurrent ? "destructive" : "outline"} onClick={() => handleChange(displayName)}>
+                <div>{displayName}</div>
             </Button>
         </li>
     );

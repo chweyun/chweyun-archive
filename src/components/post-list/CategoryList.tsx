@@ -3,30 +3,26 @@
 import { useRouter } from "next/navigation";
 import { CategoryButton } from "./CategoryButton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/common/Select";
-import { CategoryDetail } from "@/config/types";
 
 interface CategoryListProps {
-    categoryList: CategoryDetail[];
-    allPostCount: number;
+    categoryList: string[];
     currentCategory?: string;
 }
 
-export default function CategoryList({ categoryList, allPostCount, currentCategory = "all" }: CategoryListProps) {
+export default function CategoryList({ categoryList, currentCategory = "all" }: CategoryListProps) {
     const router = useRouter();
 
     const onCategoryChange = (value: string) => {
-        return value === "all" ? router.push("/posts") : router.push(`/posts/${value}`);
+        return value === "all" ? router.push("/posts") : router.push(`/posts?category=${value}`);
     };
-
-    console.log(currentCategory);
 
     return (
         <>
             <section className="mb-10 hidden sm:block">
-                <ul className="flex gap-3">
-                    <CategoryButton href="/posts" isCurrent={currentCategory === "all"} displayName="All" count={allPostCount} />
+                <ul className="flex gap-2 bg-red-200">
+                    <CategoryButton isCurrent={currentCategory === "all"} displayName="all" onChange={onCategoryChange} />
                     {categoryList.map((cg) => (
-                        <CategoryButton key={cg.dirName} href={`/posts/${cg.dirName}`} displayName={cg.publicName} isCurrent={cg.dirName === currentCategory} count={cg.count} />
+                        <CategoryButton key={cg} displayName={cg} isCurrent={cg === currentCategory} onChange={onCategoryChange} />
                     ))}
                 </ul>
             </section>
@@ -36,10 +32,10 @@ export default function CategoryList({ categoryList, allPostCount, currentCatego
                         <SelectValue placeholder="Theme" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="all">All ({allPostCount})</SelectItem>
+                        <SelectItem value="all">all</SelectItem>
                         {categoryList.map((cg) => (
-                            <SelectItem key={cg.dirName} value={cg.dirName}>
-                                {cg.publicName} ({cg.count})
+                            <SelectItem key={cg} value={cg}>
+                                {cg}
                             </SelectItem>
                         ))}
                     </SelectContent>
