@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import PostCards from "@/components/post-list/PostCards";
 import { delay } from "@/lib/utils";
+import SkeletonCards from "@/components/post-list/SkeletonCards";
 
 interface Props {
     currentCategory?: string;
@@ -45,7 +46,7 @@ export default function MorePostCards({ currentCategory, nextCursor }: Props) {
     return (
         <>
             <PostCards postList={posts} currentCategory={currentCategory} />
-            <div ref={ref} />
+            <SkeletonCards ref={ref} hasMore={hasMore} />
         </>
     );
 }
