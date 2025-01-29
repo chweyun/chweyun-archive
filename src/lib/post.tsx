@@ -1,13 +1,12 @@
 import { Client } from "@notionhq/client";
 import { HeadingItem, Post } from "@/config/types";
 import { NotionToMarkdown } from "notion-to-md";
+import { pageSize } from "@/config/const";
 
 const notion = new Client({ auth: process.env.NEXT_PUBLIC_NOTION_API_KEY });
 const databaseId = process.env.NEXT_PUBLIC_NOTION_DATABASE_ID;
 
 export const getSortedPostList = async (startCursor: string | null, category?: string): Promise<{ posts: Post[]; next_cursor: string | null; has_more: boolean }> => {
-    const pageSize = 10;
-
     const filters: any[] = [
         {
             property: "releasable",
