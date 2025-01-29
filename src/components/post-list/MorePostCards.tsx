@@ -3,7 +3,6 @@
 import type { Post } from "@/config/types";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { Spinner } from "@/app/loading";
 import PostCards from "@/components/post-list/PostCards";
 import { delay } from "@/lib/utils";
 
@@ -47,9 +46,6 @@ export default function MorePostCards({ currentCategory, nextCursor }: Props) {
         <>
             <PostCards postList={posts} currentCategory={currentCategory} />
             <div ref={ref} />
-            <div className="flex justify-center items-center p-4 ml-[-50vw] left-1/2 overflow-hidden" style={{ width: "calc(100vw - 8px)" }} ref={ref}>
-                {hasMore && <Spinner />}
-            </div>
         </>
     );
 }
